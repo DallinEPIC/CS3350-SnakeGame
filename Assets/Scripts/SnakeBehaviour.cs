@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class SnakeBehaviour : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] private GameObject head;
+    [SerializeField] private GameObject firstTail;
+    GameObject tail;
+    public List<GameObject> tailPieces = new();
+    public static SnakeBehaviour instance;
     void Start()
     {
-        
+        //add head to pieces when game starts
+        tailPieces.Add(head);
+        tailPieces.Add(firstTail);
+        instance = this;
+
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         
@@ -24,6 +32,7 @@ public class SnakeBehaviour : MonoBehaviour
         }
         else
         {
+            EatFruit();
             Debug.Log("fruit eaten");
         }
     }
@@ -35,4 +44,13 @@ public class SnakeBehaviour : MonoBehaviour
         gameObject.SetActive(false);
 
     }
+    public void EatFruit()
+    {
+        Debug.Log("Fruit Eaten");
+        Instantiate(tail);
+        TailBehaviour tailBehaviour = tail.GetComponent<TailBehaviour>();
+        tailBehaviour.nextTailPiece = gameObject;
+
+    }
+
 }

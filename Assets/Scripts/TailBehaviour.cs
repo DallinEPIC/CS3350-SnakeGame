@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
 
 //neext Tail piece is a reference to the next body piece's class
@@ -11,19 +12,33 @@ using UnityEngine;
 
 public class TailBehaviour : MonoBehaviour
 {
-    public TailBehaviour nextTailPiece;
+    
+    
+    public GameObject nextTailPiece;
     public Queue<Vector3> turnPositions = new Queue<Vector3>();
-    void Start()
-    {
-        //Mathf.Approximately();
+    
 
+    private void Start()
+    {
+        transform.LookAt(nextTailPiece.transform);
     }
 
-    
+
     void Update()
     {
-        //when we eat fruit
-        //instantiate tail prefab,
-        //set next tail piece;
+        
+        if (turnPositions.Count != 0 && Mathf.Approximately(turnPositions.Peek().x, transform.position.x) && Mathf.Approximately(turnPositions.Peek().z, transform.position.z))
+        {
+            turnPositions.Dequeue();
+            transform.LookAt(nextTailPiece.transform);
+        }
+
+
+        transform.position += transform.forward * SnakeMovementBehaviour.instance._movementSpeed * Time.deltaTime;
     }
+    public void AddTurnPos(Vector3 turnPos)
+    {
+        turnPositions.Enqueue(turnPos);
+    }
+    
 }
