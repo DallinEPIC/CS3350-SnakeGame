@@ -15,4 +15,24 @@ public class SnakeBehaviour : MonoBehaviour
     {
         
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        
+        if (!other.gameObject.CompareTag("fruit"))
+        {
+            Die();
+        }
+        else
+        {
+            Debug.Log("fruit eaten");
+        }
+    }
+    
+
+    public void Die()
+    {
+
+        gameObject.SetActive(false);
+
+    }
 }
