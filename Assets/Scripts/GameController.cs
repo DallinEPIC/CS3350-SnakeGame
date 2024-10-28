@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     [HideInInspector] public int score;
     [HideInInspector] public bool gameRunning; //Flag that stops game functionality (snake movement, fruit spawning)
     private bool gamePaused; //Flag for beginning of game
+    private float timer;
 
     
 
@@ -33,5 +34,11 @@ public class GameController : MonoBehaviour
             }
             else return; //if game still paused, still update
         }
+
+        timer += Time.deltaTime;
+        if (timer < 1) return;
+        timer -= 1;
+        if (score <= 0) return;
+        score -= 1;
     }
 }
