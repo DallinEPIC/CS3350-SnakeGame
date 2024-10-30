@@ -13,10 +13,9 @@ using UnityEngine;
 public class TailBehaviour : MonoBehaviour
 {
     
-    
     public GameObject nextTailPiece;
     public Queue<Vector3> turnPositions = new Queue<Vector3>();
-    //public Vector3 movementDirection;
+    private Vector3 _movementDirection = Vector3.right;
     
 
     private void Start()
@@ -27,36 +26,82 @@ public class TailBehaviour : MonoBehaviour
 
     void Update()
     {
+        if (!GameController.instance.gameRunning) return;
+
         transform.position += transform.forward * SnakeMovementBehaviour.instance.movementSpeed * Time.deltaTime;
         //checking if turn pos queue is empty
         if (turnPositions.Count == 0) return;
 
         Vector3 turnPos = turnPositions.Peek();
-        Debug.Log($"turnpos: {turnPos}" );
-        Debug.Log($"transform.position: {transform.position}");
-        //if (Mathf.Approximately(turnPos.x, transform.position.x) && Mathf.Approximately(turnPos.z, transform.position.z))
-        //if (turnPos.x - transform.position.x <= 0.2 && turnPos.z - transform.position.z <= 0.2)
-        if (Vector3.Distance(turnPos, transform.position) <= 0.02)
+        //Debug.Log($"turnpos: {turnPos}" );
+        //Debug.Log($"transform.position: {transform.position}");
+
+        //TODO
+        //check if moving horizontally or vertically
+        if (_movementDirection == Vector3.forward) //moving up
         {
-            //TODO
-            //check if moving horizontally or vertically
-            //if horizontal: set z of tail to next tail piece z
-            //if vertical: set x of tail piece to next tail piece x
+            if (transform.position.z < turnPos.z) return; //Not reached the turn position
 
+            //If passed turn position, lock to z and change movement direction
+            transform.position = new Vector3(transform.position.x, transform.position.y, turnPos.z);
 
-
-            //transform.position.z = nextTailPiece.transform.position.z;
-            Debug.Log("HELLO");
+            //Check if the move was a left or right move and update movement direction
+            if (nextTailPiece.transform.position.x > turnPos.x) { _movementDirection = Vector3.right; }
+            else { _movementDirection = Vector3.left; }
+            transform.forward = _movementDirection;
             turnPositions.Dequeue();
-            transform.LookAt(nextTailPiece.transform);
         }
+        else if (_movementDirection == Vector3.back) //moving down 
+        {
+            if (transform.position.z > turnPos.z) return; //Not reached the turn position
 
+            //If passed turn position, lock to z and change movement direction
+            transform.position = new Vector3(transform.position.x, transform.position.y, turnPos.z);
 
-        
+            //Check if the move was a left or right move and update movement direction
+            if (nextTailPiece.transform.position.x > turnPos.x) { _movementDirection = Vector3.right; }
+            else { _movementDirection = Vector3.left; }
+            transform.forward = _movementDirection;
+            turnPositions.Dequeue();
+        }
+        else if (_movementDirection == Vector3.left)//moving left
+        {
+            if (transform.position.x > turnPos.x) return; //Not reached the turn position
+
+            //If passed turn position, lock to x and change movement direction
+            transform.position = new Vector3(turnPos.x, transform.position.y, transform.position.z);
+
+            //Check if the move was a left or right move and update movement direction
+            if (nextTailPiece.transform.position.z > turnPos.z) { _movementDirection = Vector3.forward; }
+            else { _movementDirection = Vector3.back; }
+            transform.forward = _movementDirection;
+            turnPositions.Dequeue();
+        }
+        else //moving right
+        {
+            if (transform.position.x < turnPos.x) return; //Not reached the turn position
+
+            //If passed turn position, lock to x and change movement direction
+            transform.position = new Vector3(turnPos.x, transform.position.y, transform.position.z);
+
+            //Check if the move was a left or right move and update movement direction
+            if (nextTailPiece.transform.position.z > turnPos.z) { _movementDirection = Vector3.forward; }
+            else { _movementDirection = Vector3.back; }
+            transform.forward = _movementDirection;
+            turnPositions.Dequeue();
+        }
     }
     public void AddTurnPos(Vector3 turnPos)
     {
         turnPositions.Enqueue(turnPos);
     }
     
+    public void SpawnNextTailPiece(GameObject tailInstance)
+    {
+        tailInstance.transform.position = transform.position - _movementDirection;
+        TailBehaviour tailBehaviour = tailInstance.GetComponent<TailBehaviour>();
+        tailBehaviour.nextTailPiece = gameObject;
+        tailBehaviour.turnPositions = new Queue<Vector3>(turnPositions);
+        tailBehaviour._movementDirection = new Vector3(_movementDirection.x, _movementDirection.y, _movementDirection.z);
+    }
 }

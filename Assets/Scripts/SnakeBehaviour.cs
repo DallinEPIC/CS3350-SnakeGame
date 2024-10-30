@@ -6,15 +6,19 @@ public class SnakeBehaviour : MonoBehaviour
 {
     [SerializeField] private GameObject head;
     [SerializeField] private TailBehaviour firstTail;
-    GameObject tail;
+    private GameController GameController;
+    public GameObject tail;
     public List<TailBehaviour> tailPieces = new();
+    public AudioSource dieSound;
+    public AudioSource eatSound;
     public static SnakeBehaviour instance;
+
     void Start()
     {
         //add head to pieces when game starts
         tailPieces.Add(firstTail);
         instance = this;
-
+        GameController = GameController.instance;
     }
 
     
@@ -39,18 +43,18 @@ public class SnakeBehaviour : MonoBehaviour
 
     public void Die()
     {
-
+        dieSound.Play();
         gameObject.SetActive(false);
-
+        GameController.GameOver();
     }
     public void EatFruit()
     {
         Debug.Log("Fruit Eaten");
+        eatSound.Play();
         GameObject tailInstance = Instantiate(tail);
-        tailInstance.transform.position += -transform.forward;
-        TailBehaviour tailBehaviour = tail.GetComponent<TailBehaviour>();
-        tailBehaviour.nextTailPiece = gameObject;
-
+        tailPieces[tailPieces.Count - 1].SpawnNextTailPiece(tailInstance);
+        tailPieces.Add(tailInstance.GetComponent<TailBehaviour>());
+        GameController.score += GameController.instance.fruitScore;
     }
 
 }
