@@ -54,4 +54,9 @@ public class GameController : MonoBehaviour
         gameRunning = false;
         music.Pause();
     }
+
+    public void OnEatFruit()
+    {
+        score += fruitScore;
+    }
 }
