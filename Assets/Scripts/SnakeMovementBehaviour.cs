@@ -21,7 +21,7 @@ public class SnakeMovementBehaviour : MonoBehaviour
         if (!GameController.instance.gameRunning) return;
 
         if (Input.GetKeyDown(KeyCode.W) && _movementDirection != Vector3.back && _movementDirection != Vector3.forward) 
-        { 
+        {
             _movementDirection = Vector3.forward;
             foreach (TailBehaviour tail in SnakeBehaviour.instance.tailPieces) tail.AddTurnPos(transform.position);
         }
@@ -42,5 +42,6 @@ public class SnakeMovementBehaviour : MonoBehaviour
         }
 
         transform.position += _movementDirection * movementSpeed * Time.deltaTime;
+        transform.forward = _movementDirection;
     }
 }
