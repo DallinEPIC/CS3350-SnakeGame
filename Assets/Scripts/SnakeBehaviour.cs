@@ -8,8 +8,8 @@ public class SnakeBehaviour : MonoBehaviour
     [SerializeField] private TailBehaviour firstTail;
     public GameObject tail;
     public List<TailBehaviour> tailPieces = new();
-    public AudioSource dieSound;
-    public AudioSource eatSound;
+    public AudioClip dieSound;
+    public AudioClip eatSound;
     public static SnakeBehaviour instance;
 
     void Start()
@@ -29,7 +29,7 @@ public class SnakeBehaviour : MonoBehaviour
         
         if (!other.gameObject.CompareTag("fruit"))
         {
-            Die();
+            StartCoroutine(Die());
         }
         else
         {
@@ -37,17 +37,29 @@ public class SnakeBehaviour : MonoBehaviour
         }
     }
     
-
-    public void Die()
+    public IEnumerator Die()
     {
-        dieSound.Play();
         GameController.instance.GameOver();
-        //gameObject.SetActive(false);
+        float timeToWait = 0.2f;
+        for (int i = tailPieces.Count - 1; i >= 0; i--)
+        {
+            yield return new WaitForSeconds(timeToWait);
+
+            timeToWait *= 0.95f;
+            GameController.instance.audioSource.clip = dieSound;
+            GameController.instance.audioSource.Play();
+            tailPieces[i].gameObject.SetActive(false);
+        }
+        yield return new WaitForSeconds(timeToWait);
+        GameController.instance.audioSource.clip = dieSound;
+        GameController.instance.audioSource.Play();
+        gameObject.SetActive(false);
     }
     public void EatFruit()
     {
         Debug.Log("Fruit Eaten");
-        eatSound.Play();
+        GameController.instance.audioSource.clip = eatSound;
+        GameController.instance.audioSource.Play();
         GameObject tailInstance = Instantiate(tail);
         tailPieces[tailPieces.Count - 1].SpawnNextTailPiece(tailInstance);
         tailPieces.Add(tailInstance.GetComponent<TailBehaviour>());
