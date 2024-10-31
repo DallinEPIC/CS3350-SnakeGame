@@ -47,24 +47,22 @@ public class SnakeBehaviour : MonoBehaviour
             yield return new WaitForSeconds(timeToWait);
 
             timeToWait *= 0.95f;
-            GameController.instance.audioSource.clip = dieSound;
-            GameController.instance.audioSource.Play();
+            GameController.instance.audioSource.PlayOneShot(dieSound);
             tailPieces[i].gameObject.SetActive(false);
         }
         yield return new WaitForSeconds(timeToWait);
-        GameController.instance.audioSource.clip = dieSound;
-        GameController.instance.audioSource.Play();
+        GameController.instance.audioSource.PlayOneShot(dieSound);
         gameObject.SetActive(false);
     }
     public void EatFruit()
     {
         Debug.Log("Fruit Eaten");
-        GameController.instance.audioSource.clip = eatSound;
-        GameController.instance.audioSource.Play();
+        GameController.instance.audioSource.PlayOneShot(eatSound);
         GameObject tailInstance = Instantiate(tail);
         tailPieces[tailPieces.Count - 1].SpawnNextTailPiece(tailInstance);
         tailPieces.Add(tailInstance.GetComponent<TailBehaviour>());
         GameController.instance.OnEatFruit();
+        SnakeMovementBehaviour.instance.OnEatFruit();
         
     }
 

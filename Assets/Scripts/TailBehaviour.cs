@@ -15,7 +15,7 @@ public class TailBehaviour : MonoBehaviour
     
     public GameObject nextTailPiece;
     public Queue<Vector3> turnPositions = new Queue<Vector3>();
-    private Vector3 _movementDirection = Vector3.right;
+    [HideInInspector] public Vector3 movementDirection = Vector3.right;
     
 
     private void Start()
@@ -33,12 +33,9 @@ public class TailBehaviour : MonoBehaviour
         if (turnPositions.Count == 0) return;
 
         Vector3 turnPos = turnPositions.Peek();
-        //Debug.Log($"turnpos: {turnPos}" );
-        //Debug.Log($"transform.position: {transform.position}");
 
-        //TODO
         //check if moving horizontally or vertically
-        if (_movementDirection == Vector3.forward) //moving up
+        if (movementDirection == Vector3.forward) //moving up
         {
             if (transform.position.z < turnPos.z) return; //Not reached the turn position
 
@@ -46,12 +43,12 @@ public class TailBehaviour : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, turnPos.z);
 
             //Check if the move was a left or right move and update movement direction
-            if (nextTailPiece.transform.position.x > turnPos.x) { _movementDirection = Vector3.right; }
-            else { _movementDirection = Vector3.left; }
-            transform.forward = _movementDirection;
+            if (nextTailPiece.transform.position.x > turnPos.x) { movementDirection = Vector3.right; }
+            else { movementDirection = Vector3.left; }
+            transform.forward = movementDirection;
             turnPositions.Dequeue();
         }
-        else if (_movementDirection == Vector3.back) //moving down 
+        else if (movementDirection == Vector3.back) //moving down 
         {
             if (transform.position.z > turnPos.z) return; //Not reached the turn position
 
@@ -59,12 +56,12 @@ public class TailBehaviour : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, turnPos.z);
 
             //Check if the move was a left or right move and update movement direction
-            if (nextTailPiece.transform.position.x > turnPos.x) { _movementDirection = Vector3.right; }
-            else { _movementDirection = Vector3.left; }
-            transform.forward = _movementDirection;
+            if (nextTailPiece.transform.position.x > turnPos.x) { movementDirection = Vector3.right; }
+            else { movementDirection = Vector3.left; }
+            transform.forward = movementDirection;
             turnPositions.Dequeue();
         }
-        else if (_movementDirection == Vector3.left)//moving left
+        else if (movementDirection == Vector3.left)//moving left
         {
             if (transform.position.x > turnPos.x) return; //Not reached the turn position
 
@@ -72,9 +69,9 @@ public class TailBehaviour : MonoBehaviour
             transform.position = new Vector3(turnPos.x, transform.position.y, transform.position.z);
 
             //Check if the move was a left or right move and update movement direction
-            if (nextTailPiece.transform.position.z > turnPos.z) { _movementDirection = Vector3.forward; }
-            else { _movementDirection = Vector3.back; }
-            transform.forward = _movementDirection;
+            if (nextTailPiece.transform.position.z > turnPos.z) { movementDirection = Vector3.forward; }
+            else { movementDirection = Vector3.back; }
+            transform.forward = movementDirection;
             turnPositions.Dequeue();
         }
         else //moving right
@@ -85,10 +82,16 @@ public class TailBehaviour : MonoBehaviour
             transform.position = new Vector3(turnPos.x, transform.position.y, transform.position.z);
 
             //Check if the move was a left or right move and update movement direction
-            if (nextTailPiece.transform.position.z > turnPos.z) { _movementDirection = Vector3.forward; }
-            else { _movementDirection = Vector3.back; }
-            transform.forward = _movementDirection;
+            if (nextTailPiece.transform.position.z > turnPos.z) { movementDirection = Vector3.forward; }
+            else { movementDirection = Vector3.back; }
+            transform.forward = movementDirection;
             turnPositions.Dequeue();
+        }
+        if(nextTailPiece.tag == "Player" ) { if (turnPositions.Count == 0) transform.position = nextTailPiece.transform.position - new Vector3(movementDirection.x * 1.5f, movementDirection.y, movementDirection.z * 1.5f); }
+        else
+        {
+            TailBehaviour tailBehaviour = nextTailPiece.GetComponent<TailBehaviour>();
+            if (turnPositions.Count == tailBehaviour.turnPositions.Count) transform.position = nextTailPiece.transform.position - movementDirection;
         }
     }
     public void AddTurnPos(Vector3 turnPos)
@@ -98,10 +101,10 @@ public class TailBehaviour : MonoBehaviour
     
     public void SpawnNextTailPiece(GameObject tailInstance)
     {
-        tailInstance.transform.position = transform.position - _movementDirection;
+        tailInstance.transform.position = transform.position - movementDirection;
         TailBehaviour tailBehaviour = tailInstance.GetComponent<TailBehaviour>();
         tailBehaviour.nextTailPiece = gameObject;
         tailBehaviour.turnPositions = new Queue<Vector3>(turnPositions);
-        tailBehaviour._movementDirection = new Vector3(_movementDirection.x, _movementDirection.y, _movementDirection.z);
+        tailBehaviour.movementDirection = new Vector3(movementDirection.x, movementDirection.y, movementDirection.z);
     }
 }

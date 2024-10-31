@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class SnakeMovementBehaviour : MonoBehaviour
 {
     public Vector3 _movementDirection;
-    [SerializeField, Range(0,50)] public float movementSpeed;
+    [SerializeField, Range(0,15)] public float movementSpeed;
+    [SerializeField, Range(0,20)] public float maxMovementSpeed;
+    [SerializeField, Range(1, 1.2f)] public float movementSpeedMultiplier;
     public static SnakeMovementBehaviour instance;
 
     void Start()
@@ -43,5 +46,10 @@ public class SnakeMovementBehaviour : MonoBehaviour
 
         transform.position += _movementDirection * movementSpeed * Time.deltaTime;
         transform.forward = _movementDirection;
+    }
+    public void OnEatFruit()
+    {
+        movementSpeed *= movementSpeedMultiplier;
+        if (movementSpeed > maxMovementSpeed) movementSpeed=maxMovementSpeed;
     }
 }
