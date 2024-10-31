@@ -34,6 +34,7 @@ public class SnakeBehaviour : MonoBehaviour
         else
         {
             EatFruit();
+            other.gameObject.SetActive(false);
         }
     }
     
@@ -64,6 +65,7 @@ public class SnakeBehaviour : MonoBehaviour
         tailPieces[tailPieces.Count - 1].SpawnNextTailPiece(tailInstance);
         tailPieces.Add(tailInstance.GetComponent<TailBehaviour>());
         GameController.instance.OnEatFruit();
+        
     }
 
 }

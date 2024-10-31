@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     [HideInInspector] public bool gameRunning; //Flag that stops game functionality (snake movement, fruit spawning)
     public AudioClip music;
     public AudioClip startSound;
+    public AudioClip eatSound;
     public AudioSource audioSource;
     private float timer;
 
@@ -67,5 +68,7 @@ public class GameController : MonoBehaviour
     public void OnEatFruit()
     {
         score += fruitScore;
+        audioSource.clip = eatSound;
+        audioSource.Play();
     }
 }
