@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 25354686}
   m_Layer: 0
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -235,7 +235,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementDirection: {x: 0, y: 0, z: 0}
-  movementSpeed: 2.6
+  movementSpeed: 6
+  maxMovementSpeed: 9
+  movementSpeedMultiplier: 1.04
 --- !u!114 &25354685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2844,7 +2846,7 @@ PrefabInstance:
     - target: {fileID: 5385965433333453926, guid: d78a29c27421edd4fa225f4a1dabdc6b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.53
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5385965433333453926, guid: d78a29c27421edd4fa225f4a1dabdc6b,
         type: 3}
